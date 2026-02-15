@@ -51,7 +51,8 @@ async fn main() {
 
     let mut listener = None;
     let mut port = args.port;
-    for p in args.port..(args.port + 10) {
+    let end_port = args.port.saturating_add(9);
+    for p in args.port..=end_port {
         let addr = format!("0.0.0.0:{}", p);
         match tokio::net::TcpListener::bind(&addr).await {
             Ok(l) => {
@@ -67,7 +68,7 @@ async fn main() {
         }
     }
 
-    let listener = listener.expect("Could not find a free port in 10 tries");
+    let listener = listener.expect("Could not find a free port in range");
     let protocol = if args.tls { "https" } else { "http" };
     let url = format!("{}://localhost:{}", protocol, port);
     info!(port, "Server listening on {}", url);
