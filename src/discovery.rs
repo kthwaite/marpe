@@ -1,3 +1,4 @@
+use rayon::prelude::*;
 use std::collections::HashMap;
 use std::path::Path;
 use tracing::{info, warn};
@@ -16,32 +17,41 @@ fn should_skip(path: &Path) -> bool {
 /// Walk `root` directory, find all .md files, render them.
 /// Returns a map of relative path (string) -> rendered HTML.
 pub fn discover_and_render(root: &Path) -> HashMap<String, String> {
-    let mut files = HashMap::new();
-    for entry in WalkDir::new(root).into_iter().filter_map(|e| e.ok()) {
-        let path = entry.path();
-        if !path.is_file() {
-            continue;
-        }
-        if path.extension().and_then(|e| e.to_str()) != Some("md") {
-            continue;
-        }
-        let relative = path.strip_prefix(root).unwrap_or(path);
-        if should_skip(relative) {
-            continue;
-        }
-        let rel_str = relative.to_string_lossy().to_string();
-        match std::fs::read_to_string(path) {
-            Ok(content) => {
-                let html = render_markdown(&content);
-                info!(path = %rel_str, "Rendered markdown file");
-                files.insert(rel_str, html);
+    let entries: Vec<_> = WalkDir::new(root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|entry| {
+            let path = entry.path();
+            if !path.is_file() {
+                return false;
             }
-            Err(e) => {
-                warn!(path = %rel_str, error = %e, "Failed to read markdown file");
+            if path.extension().and_then(|e| e.to_str()) != Some("md") {
+                return false;
             }
-        }
-    }
-    files
+            let relative = path.strip_prefix(root).unwrap_or(path);
+            !should_skip(relative)
+        })
+        .collect();
+
+    entries
+        .into_par_iter()
+        .filter_map(|entry| {
+            let path = entry.path();
+            let relative = path.strip_prefix(root).unwrap_or(path);
+            let rel_str = relative.to_string_lossy().to_string();
+            match std::fs::read_to_string(path) {
+                Ok(content) => {
+                    let html = render_markdown(&content);
+                    info!(path = %rel_str, "Rendered markdown file");
+                    Some((rel_str, html))
+                }
+                Err(e) => {
+                    warn!(path = %rel_str, error = %e, "Failed to read markdown file");
+                    None
+                }
+            }
+        })
+        .collect()
 }
 
 #[cfg(test)]
