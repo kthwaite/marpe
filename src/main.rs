@@ -73,10 +73,10 @@ async fn main() {
     let url = format!("{}://localhost:{}", protocol, port);
     info!(port, "Server listening on {}", url);
 
-    if args.open {
-        if let Err(e) = open::that(&url) {
-            tracing::error!("Failed to open browser: {}", e);
-        }
+    if args.open
+        && let Err(e) = open::that(&url)
+    {
+        tracing::error!("Failed to open browser: {}", e);
     }
 
     let std_listener = listener.into_std().unwrap();

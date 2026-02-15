@@ -8,6 +8,7 @@ use crate::assets::PageShell;
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "type", content = "path")]
+#[allow(clippy::enum_variant_names)]
 pub enum SseEvent {
     FileChanged(String),
     FileAdded(String),

@@ -48,10 +48,8 @@ pub fn resolve_certs(
 
     // Ensure mkcert CA is initialized
     if !caroot.exists() || !caroot.join("rootCA.pem").exists() {
-        return Err(format!(
-            "mkcert CA not initialized. Run: mkcert -install\n\
-             Then retry with --tls."
-        ));
+        return Err("mkcert CA not initialized. Run: mkcert -install\n\
+             Then retry with --tls.".to_string());
     }
 
     // Generate certs in CAROOT
