@@ -33,12 +33,12 @@ Single-binary axum server with these modules:
 
 - **`main.rs`** — Wires everything together: CLI parsing, initial discovery, watcher startup, router construction, port binding with auto-increment fallback, graceful shutdown.
 - **`cli.rs`** — Hand-rolled arg parser (no clap). `Args` struct holds all CLI options.
-- **`state.rs`** — `AppState` (shared via `Arc`): holds the root path, an `RwLock<HashMap<String, String>>` mapping relative paths to rendered HTML, a `broadcast::Sender<SseEvent>` for live reload, and precomputed syntax-highlight CSS for light/dark themes.
+- **`state.rs`** — `AppState` (shared via `Arc`): holds the root path, an `RwLock<BTreeMap<String, String>>` mapping relative paths to rendered HTML, a `broadcast::Sender<SseEvent>` for live reload, precomputed syntax-highlight CSS scoped to `.theme-light`/`.theme-dark`, and a `PageShell` for efficient page rendering.
 - **`discovery.rs`** — Walks the root directory with `walkdir`, filters to `.md` files (skipping hidden dirs and `node_modules`), renders them in parallel via `rayon`.
 - **`render.rs`** — `pulldown-cmark` with GFM extensions (tables, strikethrough, tasklists, footnotes). Fenced code blocks are syntax-highlighted with `syntect` using CSS class-based styling.
 - **`watcher.rs`** — `notify` filesystem watcher. On create/modify/remove of `.md` files, re-renders and pushes `SseEvent` through the broadcast channel.
 - **`handlers.rs`** — Axum route handlers: index redirect, `/view/*path` (full page), `/raw/*path` (HTML fragment for client-side swap), `/api/files` (JSON), `/events` (SSE stream).
-- **`assets.rs`** — `include_str!` embeds for HTML shell, CSS (github/gitlab/base), JS. `render_page` does string replacement into the shell template.
+- **`assets.rs`** — `include_str!` embeds for HTML shell, CSS (github/gitlab/base), JS, and `Monokai.tmtheme`. `PageShell` pre-bakes static assets into the template at startup; per-request rendering only substitutes title, content, and syntax CSS.
 - **`tls.rs`** — Resolves TLS certs: uses explicit paths if given, otherwise locates/generates mkcert localhost certs in CAROOT.
 
 ### Key data flow
@@ -60,6 +60,6 @@ Single-binary axum server with these modules:
 ## Conventions
 
 - Static assets are embedded at compile time via `include_str!` in `src/assets/`. Changes to CSS/JS/HTML require recompilation.
-- Syntax highlighting uses CSS classes (not inline styles) — theme CSS is generated from syntect at startup and injected into pages.
+- Syntax highlighting uses CSS classes (not inline styles) — theme CSS is generated from syntect at startup, scoped to `.theme-light`/`.theme-dark`, and injected into pages. Default themes: InspiredGitHub (light), Monokai (dark, bundled as `src/assets/Monokai.tmtheme`).
 - File filtering: hidden directories (`.` prefix) and `node_modules` are always skipped, in both discovery and watcher.
 - Rust edition 2024.

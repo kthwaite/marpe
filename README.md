@@ -2,46 +2,41 @@
 
 Local markdown preview server with live reload.
 
-## Usage
-
-Run from source:
+## Install
 
 ```sh
-cargo run -- [OPTIONS] [DIRECTORY]
+cargo install --path .
 ```
 
-Run the built binary:
+## Usage
 
 ```sh
-./target/release/marpe [OPTIONS] [DIRECTORY]
+marpe [OPTIONS] [DIRECTORY]
 ```
 
 - `DIRECTORY` defaults to the current directory.
 - `--port` is the starting port; marpe will try up to 10 ports (`PORT..PORT+9`) if needed.
 - `--cert` and `--key` must be provided together.
 
-## CLI help
+## Options
 
 ```text
-Usage: markdown-preview [OPTIONS] [DIRECTORY]
-
-Options:
   --tls          Enable HTTPS (uses mkcert certificates)
   --open         Open the browser automatically
   --cert <PATH>  TLS certificate file (PEM)
   --key <PATH>   TLS private key file (PEM)
   --port <PORT>  Starting port (default: 13181)
   --syntax-theme-light <THEME>  Syntax theme for light mode (default: InspiredGitHub)
-  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: base16-ocean.dark)
+  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: Monokai)
   -h, --help     Show this help
 ```
 
 ## Examples
 
 ```sh
-cargo run
-cargo run -- --open
-cargo run -- --port 8080 ./docs
-cargo run -- --tls
-cargo run -- --tls --cert ./localhost.pem --key ./localhost-key.pem
+marpe
+marpe --open
+marpe --port 8080 ./docs
+marpe --tls
+marpe --tls --cert ./localhost.pem --key ./localhost-key.pem
 ```
