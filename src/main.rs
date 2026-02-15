@@ -1,4 +1,5 @@
 mod assets;
+mod cli;
 mod discovery;
 mod handlers;
 mod render;
@@ -7,7 +8,6 @@ mod watcher;
 
 use axum::Router;
 use axum::routing::get;
-use std::path::PathBuf;
 use std::sync::Arc;
 use tower_http::trace::TraceLayer;
 use tracing::info;
@@ -16,12 +16,8 @@ use tracing::info;
 async fn main() {
     tracing_subscriber::fmt::init();
 
-    let root = std::env::args()
-        .nth(1)
-        .map(PathBuf::from)
-        .unwrap_or_else(|| std::env::current_dir().expect("Failed to get current directory"));
-
-    let root = root.canonicalize().expect("Invalid directory path");
+    let args = cli::parse_args();
+    let root = args.root.canonicalize().expect("Invalid directory path");
     info!(path = %root.display(), "Serving markdown files from");
 
     let state = state::AppState::new(root.clone());
