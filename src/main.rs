@@ -46,7 +46,27 @@ async fn main() {
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 
-    let addr = "0.0.0.0:13181";
+    let mut listener = None;
+    let mut port = args.port;
+    for p in args.port..(args.port + 10) {
+        let addr = format!("0.0.0.0:{}", p);
+        match tokio::net::TcpListener::bind(&addr).await {
+            Ok(l) => {
+                listener = Some(l);
+                port = p;
+                break;
+            }
+            Err(ref e) if e.kind() == std::io::ErrorKind::AddrInUse => {
+                info!(port = p, "Port already in use, trying next one");
+                continue;
+            }
+            Err(e) => panic!("Failed to bind to port {}: {}", p, e),
+        }
+    }
+
+    let listener = listener.expect("Could not find a free port in 10 tries");
+    let protocol = if args.tls { "https" } else { "http" };
+    info!(port, "Server listening on {}://localhost:{}", protocol, port);
 
     if args.tls {
         let (cert_path, key_path) = tls::resolve_certs(args.cert, args.key)
@@ -56,14 +76,13 @@ async fn main() {
             .await
             .expect("Failed to load TLS certificates");
 
-        info!(addr, "Server listening on https://localhost:13181");
-        axum_server::bind_rustls(addr.parse::<std::net::SocketAddr>().unwrap(), rustls_config)
+        let std_listener = listener.into_std().unwrap();
+        axum_server::from_tcp_rustls(std_listener, rustls_config)
+            .unwrap()
             .serve(app.into_make_service())
             .await
             .unwrap();
     } else {
-        info!(addr, "Server listening on http://localhost:13181");
-        let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
         axum::serve(listener, app)
             .with_graceful_shutdown(shutdown_signal())
             .await
