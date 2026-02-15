@@ -11,7 +11,6 @@ use std::sync::Arc;
 use tokio_stream::wrappers::BroadcastStream;
 use tokio_stream::StreamExt;
 
-use crate::assets;
 use crate::state::AppState;
 
 /// GET / — redirect to README.md or first file or empty state
@@ -22,7 +21,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     } else if let Some(first) = files.first() {
         Redirect::temporary(&format!("/view/{first}")).into_response()
     } else {
-        Html(assets::render_empty_state(&state.syntax_css_light, &state.syntax_css_dark)).into_response()
+        Html(state.page_shell.render_empty(&state.syntax_css_light, &state.syntax_css_dark)).into_response()
     }
 }
 
@@ -32,7 +31,7 @@ pub async fn view_file(
     State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
     match state.get_rendered(&path).await {
-        Some(html) => Html(assets::render_page(&path, &html, &state.syntax_css_light, &state.syntax_css_dark)).into_response(),
+        Some(html) => Html(state.page_shell.render(&path, &html, &state.syntax_css_light, &state.syntax_css_dark)).into_response(),
         None => (StatusCode::NOT_FOUND, Html("File not found".to_string())).into_response(),
     }
 }

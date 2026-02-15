@@ -4,6 +4,8 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::{broadcast, RwLock};
 
+use crate::assets::PageShell;
+
 #[derive(Debug, Clone, Serialize)]
 #[serde(tag = "type", content = "path")]
 pub enum SseEvent {
@@ -18,6 +20,7 @@ pub struct AppState {
     pub tx: broadcast::Sender<SseEvent>,
     pub syntax_css_light: String,
     pub syntax_css_dark: String,
+    pub page_shell: PageShell,
 }
 
 impl AppState {
@@ -43,6 +46,7 @@ impl AppState {
             tx,
             syntax_css_light,
             syntax_css_dark,
+            page_shell: PageShell::new(),
         })
     }
 
