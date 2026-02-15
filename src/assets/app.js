@@ -1,4 +1,8 @@
 (function() {
+    function encodePath(path) {
+        return path.split('/').map(encodeURIComponent).join('/');
+    }
+
     const currentPath = () => decodeURIComponent(location.pathname.replace(/^\/view\//, ''));
 
     // SSE
@@ -6,7 +10,7 @@
     es.onmessage = (e) => {
         const event = JSON.parse(e.data);
         if (event.type === 'FileChanged' && event.path === currentPath()) {
-            fetch('/raw/' + currentPath())
+            fetch('/raw/' + encodePath(currentPath()))
                 .then(r => r.text())
                 .then(html => { document.querySelector('.markdown-body').innerHTML = html; });
         }
@@ -24,7 +28,7 @@
         files.forEach(f => {
             const li = document.createElement('li');
             const a = document.createElement('a');
-            a.href = '/view/' + f;
+            a.href = '/view/' + encodePath(f);
             a.textContent = f;
             a.onclick = (e) => {
                 e.preventDefault();
@@ -36,19 +40,23 @@
         });
     }
 
-    async function navigateTo(path) {
-        const res = await fetch('/raw/' + path);
+    async function renderPath(path) {
+        const res = await fetch('/raw/' + encodePath(path));
         const html = await res.text();
         document.querySelector('.markdown-body').innerHTML = html;
-        history.pushState(null, '', '/view/' + path);
         document.querySelectorAll('#file-tree a').forEach(a => {
-            a.classList.toggle('active', a.href.endsWith('/view/' + path));
+            a.classList.toggle('active', decodeURIComponent(a.pathname) === '/view/' + path);
         });
+    }
+
+    async function navigateTo(path) {
+        await renderPath(path);
+        history.pushState(null, '', '/view/' + encodePath(path));
     }
 
     window.onpopstate = () => {
         const path = currentPath();
-        if (path) navigateTo(path);
+        if (path) renderPath(path);
     };
 
     // Theme (Light/Dark)
