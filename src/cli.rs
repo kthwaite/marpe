@@ -8,6 +8,7 @@ pub struct Args {
     pub port: u16,
     pub syntax_theme_light: String,
     pub syntax_theme_dark: String,
+    pub open: bool,
 }
 
 pub fn parse_args() -> Args {
@@ -19,10 +20,12 @@ pub fn parse_args() -> Args {
     let mut port: u16 = 13181;
     let mut syntax_theme_light = "InspiredGitHub".to_string();
     let mut syntax_theme_dark = "base16-ocean.dark".to_string();
+    let mut open = false;
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
             "--tls" => tls = true,
+            "--open" => open = true,
             "--cert" => cert = args.next().map(PathBuf::from),
             "--key" => key = args.next().map(PathBuf::from),
             "--port" => {
@@ -54,6 +57,7 @@ pub fn parse_args() -> Args {
                 eprintln!();
                 eprintln!("Options:");
                 eprintln!("  --tls          Enable HTTPS (uses mkcert certificates)");
+                eprintln!("  --open         Open the browser automatically");
                 eprintln!("  --cert <PATH>  TLS certificate file (PEM)");
                 eprintln!("  --key <PATH>   TLS private key file (PEM)");
                 eprintln!("  --port <PORT>  Starting port (default: 13181)");
@@ -74,5 +78,5 @@ pub fn parse_args() -> Args {
 
     let root = root.unwrap_or_else(|| std::env::current_dir().expect("Failed to get current directory"));
 
-    Args { root, tls, cert, key, port, syntax_theme_light, syntax_theme_dark }
+    Args { root, tls, cert, key, port, syntax_theme_light, syntax_theme_dark, open }
 }

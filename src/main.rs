@@ -10,8 +10,11 @@ mod watcher;
 use axum::Router;
 use axum::routing::get;
 use std::sync::Arc;
+use std::time::Duration;
 use tower_http::trace::TraceLayer;
 use tracing::info;
+
+const SHUTDOWN_GRACE_PERIOD: Duration = Duration::from_secs(2);
 
 #[tokio::main]
 async fn main() {
@@ -66,7 +69,23 @@ async fn main() {
 
     let listener = listener.expect("Could not find a free port in 10 tries");
     let protocol = if args.tls { "https" } else { "http" };
-    info!(port, "Server listening on {}://localhost:{}", protocol, port);
+    let url = format!("{}://localhost:{}", protocol, port);
+    info!(port, "Server listening on {}", url);
+
+    if args.open {
+        if let Err(e) = open::that(&url) {
+            tracing::error!("Failed to open browser: {}", e);
+        }
+    }
+
+    let std_listener = listener.into_std().unwrap();
+
+    let handle = axum_server::Handle::new();
+    let shutdown_handle = handle.clone();
+    tokio::spawn(async move {
+        shutdown_signal().await;
+        shutdown_handle.graceful_shutdown(Some(SHUTDOWN_GRACE_PERIOD));
+    });
 
     if args.tls {
         let (cert_path, key_path) = tls::resolve_certs(args.cert, args.key)
@@ -76,15 +95,17 @@ async fn main() {
             .await
             .expect("Failed to load TLS certificates");
 
-        let std_listener = listener.into_std().unwrap();
         axum_server::from_tcp_rustls(std_listener, rustls_config)
             .unwrap()
+            .handle(handle)
             .serve(app.into_make_service())
             .await
             .unwrap();
     } else {
-        axum::serve(listener, app)
-            .with_graceful_shutdown(shutdown_signal())
+        axum_server::from_tcp(std_listener)
+            .unwrap()
+            .handle(handle)
+            .serve(app.into_make_service())
             .await
             .unwrap();
     }
