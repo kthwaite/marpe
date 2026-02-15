@@ -1,8 +1,47 @@
-# markdown-preview
+# marpe
 
-Run in a directory, markdown-preview
+Local markdown preview server with live reload.
 
-1. Locates all markdown files and serves a HTML preview on localhost:13181
-2. Watches for changes and auto-reloads
+## Usage
 
-You can switch between GitHub and GitLab styling.
+Run from source:
+
+```sh
+cargo run -- [OPTIONS] [DIRECTORY]
+```
+
+Run the built binary:
+
+```sh
+./target/release/marpe [OPTIONS] [DIRECTORY]
+```
+
+- `DIRECTORY` defaults to the current directory.
+- `--port` is the starting port; marpe will try up to 10 ports (`PORT..PORT+9`) if needed.
+- `--cert` and `--key` must be provided together.
+
+## CLI help
+
+```text
+Usage: markdown-preview [OPTIONS] [DIRECTORY]
+
+Options:
+  --tls          Enable HTTPS (uses mkcert certificates)
+  --open         Open the browser automatically
+  --cert <PATH>  TLS certificate file (PEM)
+  --key <PATH>   TLS private key file (PEM)
+  --port <PORT>  Starting port (default: 13181)
+  --syntax-theme-light <THEME>  Syntax theme for light mode (default: InspiredGitHub)
+  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: base16-ocean.dark)
+  -h, --help     Show this help
+```
+
+## Examples
+
+```sh
+cargo run
+cargo run -- --open
+cargo run -- --port 8080 ./docs
+cargo run -- --tls
+cargo run -- --tls --cert ./localhost.pem --key ./localhost-key.pem
+```
