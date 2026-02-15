@@ -47,13 +47,28 @@ async fn main() {
         .with_state(state);
 
     let addr = "0.0.0.0:13181";
-    info!(addr, "Server listening");
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
 
-    axum::serve(listener, app)
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+    if args.tls {
+        let (cert_path, key_path) = tls::resolve_certs(args.cert, args.key)
+            .expect("Failed to resolve TLS certificates");
+
+        let rustls_config = axum_server::tls_rustls::RustlsConfig::from_pem_file(&cert_path, &key_path)
+            .await
+            .expect("Failed to load TLS certificates");
+
+        info!(addr, "Server listening on https://localhost:13181");
+        axum_server::bind_rustls(addr.parse::<std::net::SocketAddr>().unwrap(), rustls_config)
+            .serve(app.into_make_service())
+            .await
+            .unwrap();
+    } else {
+        info!(addr, "Server listening on http://localhost:13181");
+        let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+        axum::serve(listener, app)
+            .with_graceful_shutdown(shutdown_signal())
+            .await
+            .unwrap();
+    }
 }
 
 async fn shutdown_signal() {
