@@ -6,12 +6,25 @@
     <title>{title} — markdown-preview</title>
     <style id="github-theme">{github_css}</style>
     <style id="gitlab-theme">{gitlab_css}</style>
+    <style id="syntax-light">
+        .theme-light .highlight { background-color: #fff; }
+        .theme-light .highlight .source { background-color: #fff; }
+        {syntax_css_light}
+    </style>
+    <style id="syntax-dark">
+        .theme-dark .highlight { background-color: #1b1d23; }
+        .theme-dark .highlight .source { background-color: #1b1d23; }
+        {syntax_css_dark}
+    </style>
     <style>{base_css}</style>
 </head>
-<body class="theme-github">
+<body class="theme-light style-github">
     <header>
         <span class="logo">markdown-preview</span>
-        <button id="theme-toggle" title="Switch theme">GitHub</button>
+        <div class="header-controls">
+            <button id="style-toggle" title="Switch markdown style">GitHub</button>
+            <button id="theme-toggle" title="Switch light/dark mode">Light</button>
+        </div>
     </header>
     <div class="layout">
         <nav id="sidebar">

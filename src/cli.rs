@@ -6,6 +6,8 @@ pub struct Args {
     pub cert: Option<PathBuf>,
     pub key: Option<PathBuf>,
     pub port: u16,
+    pub syntax_theme_light: String,
+    pub syntax_theme_dark: String,
 }
 
 pub fn parse_args() -> Args {
@@ -15,6 +17,8 @@ pub fn parse_args() -> Args {
     let mut cert: Option<PathBuf> = None;
     let mut key: Option<PathBuf> = None;
     let mut port: u16 = 13181;
+    let mut syntax_theme_light = "InspiredGitHub".to_string();
+    let mut syntax_theme_dark = "base16-ocean.dark".to_string();
 
     while let Some(arg) = args.next() {
         match arg.as_str() {
@@ -29,6 +33,22 @@ pub fn parse_args() -> Args {
                     std::process::exit(1);
                 }
             }
+            "--syntax-theme-light" => {
+                if let Some(t) = args.next() {
+                    syntax_theme_light = t;
+                } else {
+                    eprintln!("Missing theme name for --syntax-theme-light");
+                    std::process::exit(1);
+                }
+            }
+            "--syntax-theme-dark" => {
+                if let Some(t) = args.next() {
+                    syntax_theme_dark = t;
+                } else {
+                    eprintln!("Missing theme name for --syntax-theme-dark");
+                    std::process::exit(1);
+                }
+            }
             "--help" | "-h" => {
                 eprintln!("Usage: markdown-preview [OPTIONS] [DIRECTORY]");
                 eprintln!();
@@ -37,6 +57,8 @@ pub fn parse_args() -> Args {
                 eprintln!("  --cert <PATH>  TLS certificate file (PEM)");
                 eprintln!("  --key <PATH>   TLS private key file (PEM)");
                 eprintln!("  --port <PORT>  Starting port (default: 13181)");
+                eprintln!("  --syntax-theme-light <THEME>  Syntax theme for light mode (default: InspiredGitHub)");
+                eprintln!("  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: base16-ocean.dark)");
                 eprintln!("  -h, --help     Show this help");
                 std::process::exit(0);
             }
@@ -52,5 +74,5 @@ pub fn parse_args() -> Args {
 
     let root = root.unwrap_or_else(|| std::env::current_dir().expect("Failed to get current directory"));
 
-    Args { root, tls, cert, key, port }
+    Args { root, tls, cert, key, port, syntax_theme_light, syntax_theme_dark }
 }

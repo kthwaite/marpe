@@ -21,7 +21,7 @@ async fn main() {
     let root = args.root.canonicalize().expect("Invalid directory path");
     info!(path = %root.display(), "Serving markdown files from");
 
-    let state = state::AppState::new(root.clone());
+    let state = state::AppState::new(root.clone(), &args.syntax_theme_light, &args.syntax_theme_dark);
 
     // Initial file discovery
     let files = discovery::discover_and_render(&root);

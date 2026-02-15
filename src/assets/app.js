@@ -51,18 +51,33 @@
         if (path) navigateTo(path);
     };
 
-    // Theme
-    const toggle = document.getElementById('theme-toggle');
+    // Theme (Light/Dark)
+    const themeToggle = document.getElementById('theme-toggle');
     function setTheme(theme) {
-        document.body.className = 'theme-' + theme;
-        toggle.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+        document.body.classList.remove('theme-light', 'theme-dark');
+        document.body.classList.add('theme-' + theme);
+        themeToggle.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
         localStorage.setItem('md-preview-theme', theme);
     }
-    toggle.onclick = () => {
-        setTheme(document.body.className === 'theme-github' ? 'gitlab' : 'github');
+    themeToggle.onclick = () => {
+        setTheme(document.body.classList.contains('theme-light') ? 'dark' : 'light');
     };
-    const saved = localStorage.getItem('md-preview-theme');
-    if (saved) setTheme(saved);
+    const savedTheme = localStorage.getItem('md-preview-theme') || 'light';
+    setTheme(savedTheme);
+
+    // Style (GitHub/GitLab)
+    const styleToggle = document.getElementById('style-toggle');
+    function setStyle(style) {
+        document.body.classList.remove('style-github', 'style-gitlab');
+        document.body.classList.add('style-' + style);
+        styleToggle.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+        localStorage.setItem('md-preview-style', style);
+    }
+    styleToggle.onclick = () => {
+        setStyle(document.body.classList.contains('style-github') ? 'gitlab' : 'github');
+    };
+    const savedStyle = localStorage.getItem('md-preview-style') || 'github';
+    setStyle(savedStyle);
 
     loadSidebar();
 })();

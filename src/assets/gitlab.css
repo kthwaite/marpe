@@ -1,7 +1,7 @@
 /* GitLab Markdown Theme — approximation of GitLab's rendering style */
-/* Scoped to .theme-gitlab .markdown-body */
+/* Scoped to .style-gitlab .markdown-body */
 
-.theme-gitlab .markdown-body {
+.style-gitlab .markdown-body {
     color: #303030;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     font-size: 16px;
@@ -9,67 +9,79 @@
     word-wrap: break-word;
 }
 
+.theme-dark .style-gitlab .markdown-body {
+    color: #dbdbdb;
+}
+
 /* Headings */
-.theme-gitlab .markdown-body h1,
-.theme-gitlab .markdown-body h2,
-.theme-gitlab .markdown-body h3,
-.theme-gitlab .markdown-body h4,
-.theme-gitlab .markdown-body h5,
-.theme-gitlab .markdown-body h6 {
+.style-gitlab .markdown-body h1,
+.style-gitlab .markdown-body h2,
+.style-gitlab .markdown-body h3,
+.style-gitlab .markdown-body h4,
+.style-gitlab .markdown-body h5,
+.style-gitlab .markdown-body h6 {
     margin-top: 24px;
     margin-bottom: 16px;
     font-weight: 600;
     line-height: 1.3;
 }
 
-.theme-gitlab .markdown-body h1 {
+.style-gitlab .markdown-body h1 {
     font-size: 1.75em;
     padding-bottom: 0.25em;
     border-bottom: 1px solid #dbdbdb;
 }
 
-.theme-gitlab .markdown-body h2 {
+.theme-dark .style-gitlab .markdown-body h1 {
+    border-bottom-color: #404040;
+}
+
+.style-gitlab .markdown-body h2 {
     font-size: 1.5em;
     padding-bottom: 0.25em;
     border-bottom: 1px solid #dbdbdb;
 }
 
-.theme-gitlab .markdown-body h3 {
+.theme-dark .style-gitlab .markdown-body h2 {
+    border-bottom-color: #404040;
+}
+
+.style-gitlab .markdown-body h3 {
     font-size: 1.25em;
 }
 
-.theme-gitlab .markdown-body h4 {
+.style-gitlab .markdown-body h4 {
     font-size: 1.1em;
 }
 
-.theme-gitlab .markdown-body h5 {
+.style-gitlab .markdown-body h5 {
     font-size: 1em;
 }
 
-.theme-gitlab .markdown-body h6 {
+.style-gitlab .markdown-body h6 {
     font-size: 0.9em;
     color: #666;
 }
 
 /* Paragraphs */
-.theme-gitlab .markdown-body p {
+.style-gitlab .markdown-body p {
     margin-top: 0;
     margin-bottom: 16px;
 }
 
 /* Links */
-.theme-gitlab .markdown-body a {
+.style-gitlab .markdown-body a {
     color: #1068bf;
     text-decoration: none;
 }
 
-.theme-gitlab .markdown-body a:hover {
+.style-gitlab .markdown-body a:hover {
     color: #0b4e8f;
     text-decoration: underline;
 }
 
 /* Inline code */
-.theme-gitlab .markdown-body code {
+.style-gitlab .markdown-body code {
     padding: 0.15em 0.4em;
     margin: 0;
     font-size: 85%;
@@ -81,7 +93,7 @@
 }
 
 /* Code blocks */
-.theme-gitlab .markdown-body pre {
+.style-gitlab .markdown-body pre {
     padding: 16px;
     overflow: auto;
     font-size: 85%;
@@ -93,7 +105,7 @@
     margin-bottom: 16px;
 }
 
-.theme-gitlab .markdown-body pre code {
+.style-gitlab .markdown-body pre code {
     display: inline;
     padding: 0;
     margin: 0;
@@ -105,7 +117,7 @@
 }
 
 /* Blockquotes */
-.theme-gitlab .markdown-body blockquote {
+.style-gitlab .markdown-body blockquote {
     margin: 0 0 16px 0;
     padding: 8px 16px;
     color: #666;
@@ -113,41 +125,41 @@
     background: #fafafa;
 }
 
-.theme-gitlab .markdown-body blockquote > :first-child {
+.style-gitlab .markdown-body blockquote > :first-child {
     margin-top: 0;
 }
 
-.theme-gitlab .markdown-body blockquote > :last-child {
+.style-gitlab .markdown-body blockquote > :last-child {
     margin-bottom: 0;
 }
 
 /* Lists */
-.theme-gitlab .markdown-body ul,
-.theme-gitlab .markdown-body ol {
+.style-gitlab .markdown-body ul,
+.style-gitlab .markdown-body ol {
     margin-top: 0;
     margin-bottom: 16px;
     padding-left: 2em;
 }
 
-.theme-gitlab .markdown-body li {
+.style-gitlab .markdown-body li {
     margin-top: 0.25em;
 }
 
-.theme-gitlab .markdown-body li + li {
+.style-gitlab .markdown-body li + li {
     margin-top: 0.25em;
 }
 
-.theme-gitlab .markdown-body li > p {
+.style-gitlab .markdown-body li > p {
     margin-top: 16px;
 }
 
 /* Task lists */
-.theme-gitlab .markdown-body input[type="checkbox"] {
+.style-gitlab .markdown-body input[type="checkbox"] {
     margin-right: 0.5em;
 }
 
 /* Tables */
-.theme-gitlab .markdown-body table {
+.style-gitlab .markdown-body table {
     border-spacing: 0;
     border-collapse: collapse;
     margin-top: 0;
@@ -158,28 +170,28 @@
     overflow: auto;
 }
 
-.theme-gitlab .markdown-body table th {
+.style-gitlab .markdown-body table th {
     font-weight: 600;
     padding: 8px 12px;
     border: 1px solid #dbdbdb;
     background: #fafafa;
 }
 
-.theme-gitlab .markdown-body table td {
+.style-gitlab .markdown-body table td {
     padding: 8px 12px;
     border: 1px solid #dbdbdb;
 }
 
-.theme-gitlab .markdown-body table tr {
+.style-gitlab .markdown-body table tr {
     background: #fff;
 }
 
-.theme-gitlab .markdown-body table tr:nth-child(2n) {
+.style-gitlab .markdown-body table tr:nth-child(2n) {
     background: #fafafa;
 }
 
 /* Horizontal rule */
-.theme-gitlab .markdown-body hr {
+.style-gitlab .markdown-body hr {
     height: 1px;
     padding: 0;
     margin: 24px 0;
@@ -188,36 +200,36 @@
 }
 
 /* Images */
-.theme-gitlab .markdown-body img {
+.style-gitlab .markdown-body img {
     max-width: 100%;
     height: auto;
 }
 
 /* Strong */
-.theme-gitlab .markdown-body strong {
+.style-gitlab .markdown-body strong {
     font-weight: 600;
 }
 
 /* Definition lists */
-.theme-gitlab .markdown-body dl {
+.style-gitlab .markdown-body dl {
     margin-bottom: 16px;
 }
 
-.theme-gitlab .markdown-body dt {
+.style-gitlab .markdown-body dt {
     font-weight: 600;
     margin-top: 16px;
 }
 
-.theme-gitlab .markdown-body dd {
+.style-gitlab .markdown-body dd {
     margin-left: 2em;
     margin-bottom: 8px;
 }
 
 /* First child / last child spacing */
-.theme-gitlab .markdown-body > *:first-child {
+.style-gitlab .markdown-body > *:first-child {
     margin-top: 0 !important;
 }
 
-.theme-gitlab .markdown-body > *:last-child {
+.style-gitlab .markdown-body > *:last-child {
     margin-bottom: 0 !important;
 }

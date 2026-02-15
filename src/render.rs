@@ -1,11 +1,10 @@
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag, TagEnd, html};
 use std::sync::LazyLock;
-use syntect::highlighting::ThemeSet;
-use syntect::html::highlighted_html_for_string;
+use syntect::html::{ClassedHTMLGenerator, ClassStyle};
 use syntect::parsing::SyntaxSet;
+use syntect::util::LinesWithEndings;
 
 static SYNTAX_SET: LazyLock<SyntaxSet> = LazyLock::new(SyntaxSet::load_defaults_newlines);
-static THEME_SET: LazyLock<ThemeSet> = LazyLock::new(ThemeSet::load_defaults);
 
 /// Render markdown text to an HTML fragment string with syntax highlighting.
 pub fn render_markdown(input: &str) -> String {
@@ -49,7 +48,6 @@ pub fn render_markdown(input: &str) -> String {
 
 fn try_highlight(lang: &str, code: &str) -> String {
     let ss = &*SYNTAX_SET;
-    let theme = &THEME_SET.themes["InspiredGitHub"];
 
     let syntax = ss
         .find_syntax_by_token(lang)
@@ -57,9 +55,15 @@ fn try_highlight(lang: &str, code: &str) -> String {
 
     match syntax {
         Some(syn) => {
-            highlighted_html_for_string(code, ss, syn, theme).unwrap_or_else(|_| {
-                plain_code_block(lang, code)
-            })
+            let mut html_generator =
+                ClassedHTMLGenerator::new_with_class_style(syn, ss, ClassStyle::Spaced);
+            for line in LinesWithEndings::from(code) {
+                let _ = html_generator.parse_html_for_line_which_includes_newline(line);
+            }
+            format!(
+                "<pre class=\"highlight\"><code>{}</code></pre>",
+                html_generator.finalize()
+            )
         }
         None => plain_code_block(lang, code),
     }
@@ -123,8 +127,7 @@ mod tests {
     fn highlights_rust_code_block() {
         let input = "```rust\nfn main() {}\n```";
         let html = render_markdown(input);
-        assert!(html.contains("<pre style="));
-        assert!(html.contains("<span style="));
+        assert!(html.contains("<pre class=\"highlight\">"));
         assert!(html.contains("main"));
     }
 
@@ -132,7 +135,7 @@ mod tests {
     fn highlights_python_code_block() {
         let input = "```python\ndef hello():\n    pass\n```";
         let html = render_markdown(input);
-        assert!(html.contains("<pre style="));
+        assert!(html.contains("<pre class=\"highlight\">"));
         assert!(html.contains("hello"));
     }
 

@@ -22,7 +22,7 @@ pub async fn index(State(state): State<Arc<AppState>>) -> impl IntoResponse {
     } else if let Some(first) = files.first() {
         Redirect::temporary(&format!("/view/{first}")).into_response()
     } else {
-        Html(assets::render_empty_state()).into_response()
+        Html(assets::render_empty_state(&state.syntax_css_light, &state.syntax_css_dark)).into_response()
     }
 }
 
@@ -32,7 +32,7 @@ pub async fn view_file(
     State(state): State<Arc<AppState>>,
 ) -> impl IntoResponse {
     match state.get_rendered(&path).await {
-        Some(html) => Html(assets::render_page(&path, &html)).into_response(),
+        Some(html) => Html(assets::render_page(&path, &html, &state.syntax_css_light, &state.syntax_css_dark)).into_response(),
         None => (StatusCode::NOT_FOUND, Html("File not found".to_string())).into_response(),
     }
 }
