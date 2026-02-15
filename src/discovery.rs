@@ -19,17 +19,15 @@ fn should_skip(path: &Path) -> bool {
 pub fn discover_and_render(root: &Path) -> HashMap<String, String> {
     let entries: Vec<_> = WalkDir::new(root)
         .into_iter()
+        .filter_entry(|entry| {
+            let path = entry.path();
+            let relative = path.strip_prefix(root).unwrap_or(path);
+            !should_skip(relative)
+        })
         .filter_map(|e| e.ok())
         .filter(|entry| {
             let path = entry.path();
-            if !path.is_file() {
-                return false;
-            }
-            if path.extension().and_then(|e| e.to_str()) != Some("md") {
-                return false;
-            }
-            let relative = path.strip_prefix(root).unwrap_or(path);
-            !should_skip(relative)
+            path.is_file() && path.extension().and_then(|e| e.to_str()) == Some("md")
         })
         .collect();
 
