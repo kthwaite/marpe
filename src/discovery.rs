@@ -1,5 +1,5 @@
 use rayon::prelude::*;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::path::Path;
 use tracing::{info, warn};
 use walkdir::WalkDir;
@@ -16,7 +16,7 @@ fn should_skip(path: &Path) -> bool {
 
 /// Walk `root` directory, find all .md files, render them.
 /// Returns a map of relative path (string) -> rendered HTML.
-pub fn discover_and_render(root: &Path) -> HashMap<String, String> {
+pub fn discover_and_render(root: &Path) -> BTreeMap<String, String> {
     let entries: Vec<_> = WalkDir::new(root)
         .into_iter()
         .filter_entry(|entry| {

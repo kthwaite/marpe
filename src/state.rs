@@ -1,5 +1,5 @@
 use serde::Serialize;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::{broadcast, RwLock};
@@ -14,7 +14,7 @@ pub enum SseEvent {
 
 pub struct AppState {
     pub root: PathBuf,
-    pub files: RwLock<HashMap<String, String>>, // relative path (as string) -> rendered HTML
+    pub files: RwLock<BTreeMap<String, String>>, // relative path (as string) -> rendered HTML
     pub tx: broadcast::Sender<SseEvent>,
     pub syntax_css_light: String,
     pub syntax_css_dark: String,
@@ -39,7 +39,7 @@ impl AppState {
 
         Arc::new(Self {
             root,
-            files: RwLock::new(HashMap::new()),
+            files: RwLock::new(BTreeMap::new()),
             tx,
             syntax_css_light,
             syntax_css_dark,
@@ -49,9 +49,7 @@ impl AppState {
     /// Get sorted list of all file paths.
     pub async fn file_list(&self) -> Vec<String> {
         let files = self.files.read().await;
-        let mut paths: Vec<String> = files.keys().cloned().collect();
-        paths.sort();
-        paths
+        files.keys().cloned().collect()
     }
 
     /// Get rendered HTML for a path, if it exists.
