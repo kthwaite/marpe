@@ -2,16 +2,15 @@
 /* Scoped to .style-github .markdown-body */
 
 .style-github .markdown-body {
-    color: #1f2328;
+    color: var(--text-main);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     font-size: 16px;
     line-height: 1.5;
     word-wrap: break-word;
 }
 
-.theme-dark .style-github .markdown-body {
-    color: #c9d1d9;
-}
+/* No need for .theme-dark .style-github .markdown-body { color: #c9d1d9; } anymore as it uses variable */
+
 
 /* Headings */
 .style-github .markdown-body h1,
@@ -58,9 +57,8 @@
     font-size: 0.875em;
 }
 
-.style-github .markdown-body h6 {
-    font-size: 0.85em;
-    color: #656d76;
+.theme-dark .style-github .markdown-body h6 {
+    color: #8b949e;
 }
 
 /* Paragraphs & spacing */
@@ -71,9 +69,12 @@
 
 /* Links */
 .style-github .markdown-body a {
-    color: #0969da;
+    color: var(--link-main);
     text-decoration: none;
 }
+
+/* Removed theme-dark override for a as it uses variable */
+
 
 .style-github .markdown-body a:hover {
     text-decoration: underline;
@@ -85,10 +86,13 @@
     margin: 0;
     font-size: 85%;
     white-space: break-spaces;
-    background: rgba(175, 184, 193, 0.2);
+    background: var(--bg-inline-code);
     border-radius: 6px;
     font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
+
+/* Removed theme-dark override for code as it uses variable */
+
 
 /* Code blocks */
 .style-github .markdown-body pre {
@@ -96,11 +100,14 @@
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background: #f6f8fa;
+    background: var(--bg-code);
     border-radius: 6px;
     margin-top: 0;
     margin-bottom: 16px;
 }
+
+/* Removed theme-dark override as it's handled by variable */
+
 
 .style-github .markdown-body pre code {
     display: inline;
@@ -118,6 +125,11 @@
     padding: 0 1em;
     color: #656d76;
     border-left: 0.25em solid #d0d7de;
+}
+
+.theme-dark .style-github .markdown-body blockquote {
+    color: #8b949e;
+    border-left-color: #30363d;
 }
 
 .style-github .markdown-body blockquote > :first-child {
@@ -171,6 +183,11 @@
     border: 1px solid #d0d7de;
 }
 
+.theme-dark .style-github .markdown-body table th,
+.theme-dark .style-github .markdown-body table td {
+    border-color: #30363d;
+}
+
 .style-github .markdown-body table td {
     padding: 6px 13px;
     border: 1px solid #d0d7de;
@@ -181,8 +198,17 @@
     border-top: 1px solid #d0d7de;
 }
 
+.theme-dark .style-github .markdown-body table tr {
+    background: #0d1117;
+    border-top-color: #30363d;
+}
+
 .style-github .markdown-body table tr:nth-child(2n) {
     background: #f6f8fa;
+}
+
+.theme-dark .style-github .markdown-body table tr:nth-child(2n) {
+    background: #161b22;
 }
 
 /* Horizontal rule */
@@ -193,6 +219,10 @@
     background: #d0d7de;
     border: 0;
     border-radius: 2px;
+}
+
+.theme-dark .style-github .markdown-body hr {
+    background: #30363d;
 }
 
 /* Images */

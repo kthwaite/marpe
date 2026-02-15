@@ -61,7 +61,7 @@ fn try_highlight(lang: &str, code: &str) -> String {
                 let _ = html_generator.parse_html_for_line_which_includes_newline(line);
             }
             format!(
-                "<pre class=\"highlight\"><code>{}</code></pre>",
+                "<pre class=\"highlight\"><code class=\"source\">{}</code></pre>",
                 html_generator.finalize()
             )
         }

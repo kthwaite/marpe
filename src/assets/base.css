@@ -14,27 +14,41 @@ html, body {
 }
 
 body.theme-light {
-    background: #fff;
-    color: #1f2328;
-    --sidebar-bg: #f6f8fa;
-    --sidebar-border: #d0d7de;
-    --sidebar-text: #1f2328;
-    --sidebar-header: #656d76;
-    --sidebar-hover: #e8eaed;
-    --sidebar-active-bg: #ddf4ff;
-    --sidebar-active-text: #0969da;
+    --bg-main: #ffffff;
+    --text-main: #1f2328;
+    --bg-sidebar: #f6f8fa;
+    --border-sidebar: #d0d7de;
+    --text-sidebar: #1f2328;
+    --header-sidebar: #656d76;
+    --hover-sidebar: #e8eaed;
+    --active-bg-sidebar: #ddf4ff;
+    --active-text-sidebar: #0969da;
+    --bg-code: #f6f8fa;
+    --bg-inline-code: rgba(175, 184, 193, 0.2);
+    --border-main: #d0d7de;
+    --link-main: #0969da;
+    
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
 body.theme-dark {
-    background: #0d1117;
-    color: #c9d1d9;
-    --sidebar-bg: #161b22;
-    --sidebar-border: #30363d;
-    --sidebar-text: #c9d1d9;
-    --sidebar-header: #8b949e;
-    --sidebar-hover: #21262d;
-    --sidebar-active-bg: #1f6feb;
-    --sidebar-active-text: #f0f6fc;
+    --bg-main: #0d1117;
+    --text-main: #c9d1d9;
+    --bg-sidebar: #161b22;
+    --border-sidebar: #30363d;
+    --text-sidebar: #c9d1d9;
+    --header-sidebar: #8b949e;
+    --hover-sidebar: #21262d;
+    --active-bg-sidebar: #1f6feb;
+    --active-text-sidebar: #f0f6fc;
+    --bg-code: #161b22;
+    --bg-inline-code: rgba(110, 118, 129, 0.4);
+    --border-main: #30363d;
+    --link-main: #58a6ff;
+
+    background: var(--bg-main);
+    color: var(--text-main);
 }
 
 /* Grid layout: header on top, sidebar left, main fills rest */
@@ -91,8 +105,8 @@ header {
 
 /* Sidebar */
 #sidebar {
-    border-right: 1px solid var(--sidebar-border);
-    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-sidebar);
+    background: var(--bg-sidebar);
     overflow-y: auto;
     height: calc(100vh - 48px);
 }
@@ -101,7 +115,7 @@ header {
     padding: 12px 16px 8px;
     font-size: 12px;
     font-weight: 600;
-    color: var(--sidebar-header);
+    color: var(--header-sidebar);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -119,7 +133,7 @@ header {
     display: block;
     padding: 6px 12px;
     border-radius: 6px;
-    color: var(--sidebar-text);
+    color: var(--text-sidebar);
     text-decoration: none;
     font-size: 14px;
     line-height: 1.4;
@@ -130,12 +144,12 @@ header {
 }
 
 #file-tree a:hover {
-    background: var(--sidebar-hover);
+    background: var(--hover-sidebar);
 }
 
 #file-tree a.active {
-    background: var(--sidebar-active-bg);
-    color: var(--sidebar-active-text);
+    background: var(--active-bg-sidebar);
+    color: var(--active-text-sidebar);
     font-weight: 500;
 }
 

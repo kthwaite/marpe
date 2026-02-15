@@ -64,7 +64,7 @@
     function setTheme(theme) {
         document.body.classList.remove('theme-light', 'theme-dark');
         document.body.classList.add('theme-' + theme);
-        themeToggle.textContent = theme.charAt(0).toUpperCase() + theme.slice(1);
+        themeToggle.textContent = 'Theme: ' + theme.charAt(0).toUpperCase() + theme.slice(1);
         localStorage.setItem('md-preview-theme', theme);
     }
     themeToggle.onclick = () => {
@@ -78,7 +78,7 @@
     function setStyle(style) {
         document.body.classList.remove('style-github', 'style-gitlab');
         document.body.classList.add('style-' + style);
-        styleToggle.textContent = style.charAt(0).toUpperCase() + style.slice(1);
+        styleToggle.textContent = 'Style: ' + style.charAt(0).toUpperCase() + style.slice(1);
         localStorage.setItem('md-preview-style', style);
     }
     styleToggle.onclick = () => {

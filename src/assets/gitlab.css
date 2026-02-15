@@ -2,16 +2,15 @@
 /* Scoped to .style-gitlab .markdown-body */
 
 .style-gitlab .markdown-body {
-    color: #303030;
+    color: var(--text-main);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
     font-size: 16px;
     line-height: 1.6;
     word-wrap: break-word;
 }
 
-.theme-dark .style-gitlab .markdown-body {
-    color: #dbdbdb;
-}
+/* Removed theme-dark override for color as it uses variable */
+
 
 /* Headings */
 .style-gitlab .markdown-body h1,
@@ -58,9 +57,8 @@
     font-size: 1em;
 }
 
-.style-gitlab .markdown-body h6 {
-    font-size: 0.9em;
-    color: #666;
+.theme-dark .style-gitlab .markdown-body h6 {
+    color: #999;
 }
 
 /* Paragraphs */
@@ -71,14 +69,16 @@
 
 /* Links */
 .style-gitlab .markdown-body a {
-    color: #1068bf;
+    color: var(--link-main);
     text-decoration: none;
 }
 
 .style-gitlab .markdown-body a:hover {
-    color: #0b4e8f;
     text-decoration: underline;
 }
+
+/* Removed theme-dark override for a as it uses variable */
+
 
 /* Inline code */
 .style-gitlab .markdown-body code {
@@ -86,11 +86,14 @@
     margin: 0;
     font-size: 85%;
     white-space: break-spaces;
-    background: #fafafa;
-    border: 1px solid #dbdbdb;
+    background: var(--bg-inline-code);
+    border: 1px solid var(--border-main);
     border-radius: 4px;
     font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", monospace;
 }
+
+/* Removed theme-dark override for code as it uses variables */
+
 
 /* Code blocks */
 .style-gitlab .markdown-body pre {
@@ -98,12 +101,15 @@
     overflow: auto;
     font-size: 85%;
     line-height: 1.45;
-    background: #fafafa;
-    border: 1px solid #dbdbdb;
+    background: var(--bg-code);
+    border: 1px solid var(--border-main);
     border-radius: 4px;
     margin-top: 0;
     margin-bottom: 16px;
 }
+
+/* Removed theme-dark override for pre as it uses variables */
+
 
 .style-gitlab .markdown-body pre code {
     display: inline;
@@ -123,6 +129,12 @@
     color: #666;
     border-left: 3px solid #dbdbdb;
     background: #fafafa;
+}
+
+.theme-dark .style-gitlab .markdown-body blockquote {
+    color: #999;
+    border-left-color: #404040;
+    background: #2e2e2e;
 }
 
 .style-gitlab .markdown-body blockquote > :first-child {
@@ -177,17 +189,34 @@
     background: #fafafa;
 }
 
+.theme-dark .style-gitlab .markdown-body table th {
+    background: #2e2e2e;
+    border-color: #404040;
+}
+
 .style-gitlab .markdown-body table td {
     padding: 8px 12px;
     border: 1px solid #dbdbdb;
+}
+
+.theme-dark .style-gitlab .markdown-body table td {
+    border-color: #404040;
 }
 
 .style-gitlab .markdown-body table tr {
     background: #fff;
 }
 
+.theme-dark .style-gitlab .markdown-body table tr {
+    background: #0d1117;
+}
+
 .style-gitlab .markdown-body table tr:nth-child(2n) {
     background: #fafafa;
+}
+
+.theme-dark .style-gitlab .markdown-body table tr:nth-child(2n) {
+    background: #161b22;
 }
 
 /* Horizontal rule */
@@ -197,6 +226,10 @@
     margin: 24px 0;
     background: #dbdbdb;
     border: 0;
+}
+
+.theme-dark .style-gitlab .markdown-body hr {
+    background: #404040;
 }
 
 /* Images */

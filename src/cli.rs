@@ -19,7 +19,7 @@ pub fn parse_args() -> Args {
     let mut key: Option<PathBuf> = None;
     let mut port: u16 = 13181;
     let mut syntax_theme_light = "InspiredGitHub".to_string();
-    let mut syntax_theme_dark = "base16-ocean.dark".to_string();
+    let mut syntax_theme_dark = "Monokai".to_string();
     let mut open = false;
 
     while let Some(arg) = args.next() {
@@ -72,7 +72,7 @@ pub fn parse_args() -> Args {
                 eprintln!("  --key <PATH>   TLS private key file (PEM)");
                 eprintln!("  --port <PORT>  Starting port (default: 13181)");
                 eprintln!("  --syntax-theme-light <THEME>  Syntax theme for light mode (default: InspiredGitHub)");
-                eprintln!("  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: base16-ocean.dark)");
+                eprintln!("  --syntax-theme-dark <THEME>   Syntax theme for dark mode (default: Monokai)");
                 eprintln!("  -h, --help     Show this help");
                 std::process::exit(0);
             }

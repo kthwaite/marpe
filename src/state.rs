@@ -28,18 +28,31 @@ impl AppState {
     pub fn new(root: PathBuf, syntax_theme_light: &str, syntax_theme_dark: &str) -> Arc<Self> {
         let (tx, _rx) = broadcast::channel(64);
 
-        let ts = syntect::highlighting::ThemeSet::load_defaults();
+        let mut ts = syntect::highlighting::ThemeSet::load_defaults();
+
+        let monokai_theme = syntect::highlighting::ThemeSet::load_from_reader(
+            &mut std::io::Cursor::new(include_str!("assets/Monokai.tmtheme"))
+        ).expect("Failed to parse bundled Monokai theme");
+        ts.themes.insert("Monokai".to_string(), monokai_theme);
+
         let theme_light = &ts.themes.get(syntax_theme_light).unwrap_or_else(|| {
             eprintln!("Warning: Syntax theme '{}' not found, falling back to InspiredGitHub", syntax_theme_light);
             &ts.themes["InspiredGitHub"]
         });
         let theme_dark = &ts.themes.get(syntax_theme_dark).unwrap_or_else(|| {
-            eprintln!("Warning: Syntax theme '{}' not found, falling back to base16-ocean.dark", syntax_theme_dark);
-            &ts.themes["base16-ocean.dark"]
+            eprintln!("Warning: Syntax theme '{}' not found, falling back to Monokai", syntax_theme_dark);
+            &ts.themes["Monokai"]
         });
 
         let syntax_css_light = syntect::html::css_for_theme_with_class_style(theme_light, syntect::html::ClassStyle::Spaced).unwrap();
+        let syntax_css_light = syntax_css_light.lines()
+            .map(|l| if l.starts_with('.') { format!(".theme-light {}", l) } else { l.to_string() })
+            .collect::<Vec<_>>().join("\n");
+
         let syntax_css_dark = syntect::html::css_for_theme_with_class_style(theme_dark, syntect::html::ClassStyle::Spaced).unwrap();
+        let syntax_css_dark = syntax_css_dark.lines()
+            .map(|l| if l.starts_with('.') { format!(".theme-dark {}", l) } else { l.to_string() })
+            .collect::<Vec<_>>().join("\n");
 
         Arc::new(Self {
             root,
@@ -84,13 +97,13 @@ mod tests {
 
     #[tokio::test]
     async fn new_state_has_empty_file_list() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         assert!(state.file_list().await.is_empty());
     }
 
     #[tokio::test]
     async fn upsert_and_get() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         let is_new = state.upsert("README.md".into(), "<p>hi</p>".into()).await;
         assert!(is_new);
         assert_eq!(
@@ -101,7 +114,7 @@ mod tests {
 
     #[tokio::test]
     async fn upsert_existing_returns_false() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         state.upsert("a.md".into(), "old".into()).await;
         let is_new = state.upsert("a.md".into(), "new".into()).await;
         assert!(!is_new);
@@ -110,7 +123,7 @@ mod tests {
 
     #[tokio::test]
     async fn remove_existing() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         state.upsert("a.md".into(), "html".into()).await;
         assert!(state.remove("a.md").await);
         assert!(state.get_rendered("a.md").await.is_none());
@@ -118,13 +131,13 @@ mod tests {
 
     #[tokio::test]
     async fn remove_nonexistent() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         assert!(!state.remove("nope.md").await);
     }
 
     #[tokio::test]
     async fn file_list_is_sorted() {
-        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "base16-ocean.dark");
+        let state = AppState::new(PathBuf::from("."), "InspiredGitHub", "Monokai");
         state.upsert("z.md".into(), "".into()).await;
         state.upsert("a.md".into(), "".into()).await;
         state.upsert("m.md".into(), "".into()).await;

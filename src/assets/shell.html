@@ -7,13 +7,13 @@
     <style id="github-theme">{github_css}</style>
     <style id="gitlab-theme">{gitlab_css}</style>
     <style id="syntax-light">
-        .theme-light .highlight { background-color: #fff; }
-        .theme-light .highlight .source { background-color: #fff; }
+        .theme-light .highlight { background-color: var(--bg-code); }
+        .theme-light .highlight .source { background-color: var(--bg-code); }
         {syntax_css_light}
     </style>
     <style id="syntax-dark">
-        .theme-dark .highlight { background-color: #1b1d23; }
-        .theme-dark .highlight .source { background-color: #1b1d23; }
+        .theme-dark .highlight { background-color: var(--bg-code); }
+        .theme-dark .highlight .source { background-color: var(--bg-code); }
         {syntax_css_dark}
     </style>
     <style>{base_css}</style>
@@ -22,8 +22,8 @@
     <header>
         <span class="logo">markdown-preview</span>
         <div class="header-controls">
-            <button id="style-toggle" title="Switch markdown style">GitHub</button>
-            <button id="theme-toggle" title="Switch light/dark mode">Light</button>
+            <button id="style-toggle" title="Switch markdown style">Style: GitHub</button>
+            <button id="theme-toggle" title="Switch light/dark mode">Theme: Light</button>
         </div>
     </header>
     <div class="layout">
