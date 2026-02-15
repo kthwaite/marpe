@@ -32,7 +32,7 @@ pub fn start_watcher(
 
     let mut watcher = RecommendedWatcher::new(
         move |res| {
-            let _ = tx.blocking_send(res);
+            let _ = tx.try_send(res);
         },
         notify::Config::default(),
     )?;
