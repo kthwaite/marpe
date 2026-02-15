@@ -26,8 +26,18 @@ pub fn parse_args() -> Args {
         match arg.as_str() {
             "--tls" => tls = true,
             "--open" => open = true,
-            "--cert" => cert = args.next().map(PathBuf::from),
-            "--key" => key = args.next().map(PathBuf::from),
+            "--cert" => {
+                cert = Some(PathBuf::from(args.next().unwrap_or_else(|| {
+                    eprintln!("Missing path for --cert");
+                    std::process::exit(1);
+                })));
+            }
+            "--key" => {
+                key = Some(PathBuf::from(args.next().unwrap_or_else(|| {
+                    eprintln!("Missing path for --key");
+                    std::process::exit(1);
+                })));
+            }
             "--port" => {
                 if let Some(p) = args.next() {
                     port = p.parse().expect("Invalid port number");
@@ -74,6 +84,11 @@ pub fn parse_args() -> Args {
                 std::process::exit(1);
             }
         }
+    }
+
+    if cert.is_some() != key.is_some() {
+        eprintln!("Error: --cert and --key must be provided together");
+        std::process::exit(1);
     }
 
     let root = root.unwrap_or_else(|| std::env::current_dir().expect("Failed to get current directory"));
