@@ -5,11 +5,13 @@ edition = "2024"
 
 [dependencies]
 axum = "0.8.8"
+axum-server = { version = "0.8.0", features = ["tls-rustls"] }
 glob = "0.3.3"
 notify = "8.2.0"
 pulldown-cmark = "0.13.0"
 serde = { version = "1.0.228", features = ["derive"] }
 serde_json = "1.0.149"
+syntect = "5.3.0"
 tokio = { version = "1.49.0", features = ["full"] }
 tokio-stream = { version = "0.1.18", features = ["sync"] }
 tower = "0.5.3"
