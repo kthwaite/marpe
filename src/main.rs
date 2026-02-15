@@ -4,6 +4,7 @@ mod discovery;
 mod handlers;
 mod render;
 mod state;
+mod tls;
 mod watcher;
 
 use axum::Router;
