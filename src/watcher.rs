@@ -55,47 +55,45 @@ pub fn start_watcher(
                     match mode {
                         RenameMode::Both => {
                             if let (Some(from), Some(to)) = (event.paths.first(), event.paths.get(1)) {
-                                if is_markdown(from) && !should_skip(from) {
-                                    if let Some(rel) = relative_path(from, &root) {
-                                        if state.remove(&rel).await {
-                                            info!(path = %rel, "File renamed away");
-                                            let _ = state.tx.send(SseEvent::FileRemoved(rel));
-                                        }
-                                    }
+                                if is_markdown(from) && !should_skip(from)
+                                    && let Some(rel) = relative_path(from, &root)
+                                    && state.remove(&rel).await
+                                {
+                                    info!(path = %rel, "File renamed away");
+                                    let _ = state.tx.send(SseEvent::FileRemoved(rel));
                                 }
-                                if is_markdown(to) && !should_skip(to) {
-                                    if let Some(rel) = relative_path(to, &root) {
-                                        if let Ok(content) = tokio::fs::read_to_string(to).await {
-                                            let html = render_markdown(&content);
-                                            state.upsert(rel.clone(), html).await;
-                                            info!(path = %rel, "File renamed to");
-                                            let _ = state.tx.send(SseEvent::FileAdded(rel));
-                                        }
-                                    }
+                                if is_markdown(to) && !should_skip(to)
+                                    && let Some(rel) = relative_path(to, &root)
+                                    && let Ok(content) = tokio::fs::read_to_string(to).await
+                                {
+                                    let html = render_markdown(&content);
+                                    state.upsert(rel.clone(), html).await;
+                                    info!(path = %rel, "File renamed to");
+                                    let _ = state.tx.send(SseEvent::FileAdded(rel));
                                 }
                             }
                         }
                         RenameMode::From => {
                             for path in &event.paths {
                                 if !is_markdown(path) || should_skip(path) { continue; }
-                                if let Some(rel) = relative_path(path, &root) {
-                                    if state.remove(&rel).await {
-                                        info!(path = %rel, "File renamed away");
-                                        let _ = state.tx.send(SseEvent::FileRemoved(rel));
-                                    }
+                                if let Some(rel) = relative_path(path, &root)
+                                    && state.remove(&rel).await
+                                {
+                                    info!(path = %rel, "File renamed away");
+                                    let _ = state.tx.send(SseEvent::FileRemoved(rel));
                                 }
                             }
                         }
                         RenameMode::To => {
                             for path in &event.paths {
                                 if !is_markdown(path) || should_skip(path) { continue; }
-                                if let Some(rel) = relative_path(path, &root) {
-                                    if let Ok(content) = tokio::fs::read_to_string(path).await {
-                                        let html = render_markdown(&content);
-                                        state.upsert(rel.clone(), html).await;
-                                        info!(path = %rel, "File renamed to");
-                                        let _ = state.tx.send(SseEvent::FileAdded(rel));
-                                    }
+                                if let Some(rel) = relative_path(path, &root)
+                                    && let Ok(content) = tokio::fs::read_to_string(path).await
+                                {
+                                    let html = render_markdown(&content);
+                                    state.upsert(rel.clone(), html).await;
+                                    info!(path = %rel, "File renamed to");
+                                    let _ = state.tx.send(SseEvent::FileAdded(rel));
                                 }
                             }
                         }
@@ -148,11 +146,11 @@ pub fn start_watcher(
                 EventKind::Remove(_) => {
                     for path in &event.paths {
                         if !is_markdown(path) || should_skip(path) { continue; }
-                        if let Some(rel) = relative_path(path, &root) {
-                            if state.remove(&rel).await {
-                                info!(path = %rel, "File removed");
-                                let _ = state.tx.send(SseEvent::FileRemoved(rel));
-                            }
+                        if let Some(rel) = relative_path(path, &root)
+                            && state.remove(&rel).await
+                        {
+                            info!(path = %rel, "File removed");
+                            let _ = state.tx.send(SseEvent::FileRemoved(rel));
                         }
                     }
                 }
