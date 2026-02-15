@@ -1,0 +1,19 @@
+[package]
+name = "markdown_preview"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+axum = "0.8.8"
+glob = "0.3.3"
+notify = "8.2.0"
+pulldown-cmark = "0.13.0"
+serde = { version = "1.0.228", features = ["derive"] }
+serde_json = "1.0.149"
+tokio = { version = "1.49.0", features = ["full"] }
+tokio-stream = { version = "0.1.18", features = ["sync"] }
+tower = "0.5.3"
+tower-http = { version = "0.6.8", features = ["trace"] }
+tracing = "0.1.44"
+tracing-subscriber = "0.3.22"
+walkdir = "2.5.0"
