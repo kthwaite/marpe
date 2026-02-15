@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title} — markdown-preview</title>
+    <style id="github-theme">{github_css}</style>
+    <style id="gitlab-theme">{gitlab_css}</style>
+    <style>{base_css}</style>
+</head>
+<body class="theme-github">
+    <header>
+        <span class="logo">markdown-preview</span>
+        <button id="theme-toggle" title="Switch theme">GitHub</button>
+    </header>
+    <div class="layout">
+        <nav id="sidebar">
+            <div class="sidebar-header">Files</div>
+            <ul id="file-tree"></ul>
+        </nav>
+        <main>
+            <article class="markdown-body">{content}</article>
+        </main>
+    </div>
+    <script>{app_js}</script>
+</body>
+</html>

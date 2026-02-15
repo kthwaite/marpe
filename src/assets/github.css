@@ -1,0 +1,220 @@
+/* GitHub Markdown Theme — based on github-markdown-css (sindresorhus) */
+/* Scoped to .theme-github .markdown-body */
+
+.theme-github .markdown-body {
+    color: #1f2328;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+/* Headings */
+.theme-github .markdown-body h1,
+.theme-github .markdown-body h2,
+.theme-github .markdown-body h3,
+.theme-github .markdown-body h4,
+.theme-github .markdown-body h5,
+.theme-github .markdown-body h6 {
+    margin-top: 24px;
+    margin-bottom: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.theme-github .markdown-body h1 {
+    font-size: 2em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.theme-github .markdown-body h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #d0d7de;
+}
+
+.theme-github .markdown-body h3 {
+    font-size: 1.25em;
+}
+
+.theme-github .markdown-body h4 {
+    font-size: 1em;
+}
+
+.theme-github .markdown-body h5 {
+    font-size: 0.875em;
+}
+
+.theme-github .markdown-body h6 {
+    font-size: 0.85em;
+    color: #656d76;
+}
+
+/* Paragraphs & spacing */
+.theme-github .markdown-body p {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+/* Links */
+.theme-github .markdown-body a {
+    color: #0969da;
+    text-decoration: none;
+}
+
+.theme-github .markdown-body a:hover {
+    text-decoration: underline;
+}
+
+/* Inline code */
+.theme-github .markdown-body code {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    white-space: break-spaces;
+    background: rgba(175, 184, 193, 0.2);
+    border-radius: 6px;
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* Code blocks */
+.theme-github .markdown-body pre {
+    padding: 16px;
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    background: #f6f8fa;
+    border-radius: 6px;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.theme-github .markdown-body pre code {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border-radius: 0;
+    font-size: 100%;
+    white-space: pre;
+}
+
+/* Blockquotes */
+.theme-github .markdown-body blockquote {
+    margin: 0 0 16px 0;
+    padding: 0 1em;
+    color: #656d76;
+    border-left: 0.25em solid #d0d7de;
+}
+
+.theme-github .markdown-body blockquote > :first-child {
+    margin-top: 0;
+}
+
+.theme-github .markdown-body blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+/* Lists */
+.theme-github .markdown-body ul,
+.theme-github .markdown-body ol {
+    margin-top: 0;
+    margin-bottom: 16px;
+    padding-left: 2em;
+}
+
+.theme-github .markdown-body li {
+    margin-top: 0.25em;
+}
+
+.theme-github .markdown-body li + li {
+    margin-top: 0.25em;
+}
+
+.theme-github .markdown-body li > p {
+    margin-top: 16px;
+}
+
+/* Task lists */
+.theme-github .markdown-body input[type="checkbox"] {
+    margin-right: 0.5em;
+}
+
+/* Tables */
+.theme-github .markdown-body table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin-top: 0;
+    margin-bottom: 16px;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+}
+
+.theme-github .markdown-body table th {
+    font-weight: 600;
+    padding: 6px 13px;
+    border: 1px solid #d0d7de;
+}
+
+.theme-github .markdown-body table td {
+    padding: 6px 13px;
+    border: 1px solid #d0d7de;
+}
+
+.theme-github .markdown-body table tr {
+    background: #fff;
+    border-top: 1px solid #d0d7de;
+}
+
+.theme-github .markdown-body table tr:nth-child(2n) {
+    background: #f6f8fa;
+}
+
+/* Horizontal rule */
+.theme-github .markdown-body hr {
+    height: 0.25em;
+    padding: 0;
+    margin: 24px 0;
+    background: #d0d7de;
+    border: 0;
+    border-radius: 2px;
+}
+
+/* Images */
+.theme-github .markdown-body img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+}
+
+/* Strong & emphasis */
+.theme-github .markdown-body strong {
+    font-weight: 600;
+}
+
+/* Definition lists (pulldown-cmark extension) */
+.theme-github .markdown-body dl {
+    margin-bottom: 16px;
+}
+
+.theme-github .markdown-body dt {
+    font-weight: 600;
+    margin-top: 16px;
+}
+
+.theme-github .markdown-body dd {
+    margin-left: 2em;
+    margin-bottom: 8px;
+}
+
+/* First child / last child spacing */
+.theme-github .markdown-body > *:first-child {
+    margin-top: 0 !important;
+}
+
+.theme-github .markdown-body > *:last-child {
+    margin-bottom: 0 !important;
+}
