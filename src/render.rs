@@ -74,10 +74,14 @@ fn plain_code_block(lang: &str, code: &str) -> String {
         .replace('&', "&amp;")
         .replace('<', "&lt;")
         .replace('>', "&gt;");
-    if lang.is_empty() {
-        format!("<pre><code>{escaped}</code></pre>\n")
-    } else {
+    let lang_valid = !lang.is_empty()
+        && lang
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_' || c == '+' || c == '.');
+    if lang_valid {
         format!("<pre><code class=\"language-{lang}\">{escaped}</code></pre>\n")
+    } else {
+        format!("<pre><code>{escaped}</code></pre>\n")
     }
 }
 
@@ -161,5 +165,14 @@ mod tests {
         let html = render_markdown(input);
         assert!(html.contains("plain code"));
         assert!(html.contains("<pre"));
+    }
+
+    #[test]
+    fn lang_attribute_is_escaped() {
+        let input = "```foo\"onmouseover=\"alert(1)\ncode\n```";
+        let html = render_markdown(input);
+        assert!(!html.contains("onmouseover"));
+        assert!(!html.contains("class="));
+        assert!(html.contains("<pre><code>"));
     }
 }
