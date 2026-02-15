@@ -46,7 +46,15 @@ pub fn resolve_certs(
         return Ok((cert_path, key_path));
     }
 
-    // Generate certs
+    // Ensure mkcert CA is initialized
+    if !caroot.exists() || !caroot.join("rootCA.pem").exists() {
+        return Err(format!(
+            "mkcert CA not initialized. Run: mkcert -install\n\
+             Then retry with --tls."
+        ));
+    }
+
+    // Generate certs in CAROOT
     info!("Generating mkcert certificates for localhost");
     let gen_output = Command::new("mkcert")
         .current_dir(&caroot)
