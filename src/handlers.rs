@@ -1,6 +1,6 @@
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
+    http::{header, StatusCode},
     response::{
         sse::{Event, KeepAlive, Sse},
         Html, IntoResponse, Redirect,
@@ -65,4 +65,120 @@ pub async fn events(
         Err(_) => None,
     });
     Sse::new(stream).keep_alive(KeepAlive::default())
+}
+
+/// GET /assets/vendor/mermaid.min.js — vendored Mermaid JS bundle
+pub async fn vendor_mermaid_js() -> impl IntoResponse {
+    (
+        [
+            (header::CONTENT_TYPE, "application/javascript; charset=utf-8"),
+            (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+        ],
+        crate::assets::MERMAID_JS,
+    )
+}
+
+/// GET /assets/vendor/mathjax.js — vendored MathJax TeX-SVG bundle
+pub async fn vendor_mathjax_js() -> impl IntoResponse {
+    (
+        [
+            (header::CONTENT_TYPE, "application/javascript; charset=utf-8"),
+            (header::CACHE_CONTROL, "public, max-age=31536000, immutable"),
+        ],
+        crate::assets::MATHJAX_JS,
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use axum::body::Body;
+    use axum::http::Request;
+    use axum::routing::get;
+    use axum::Router;
+    use tower::ServiceExt;
+
+    #[tokio::test]
+    async fn test_vendor_mermaid_js_route() {
+        let res = vendor_mermaid_js().await.into_response();
+        assert_eq!(res.status(), StatusCode::OK);
+        assert_eq!(
+            res.headers().get(header::CONTENT_TYPE).unwrap(),
+            "application/javascript; charset=utf-8"
+        );
+        assert_eq!(
+            res.headers().get(header::CACHE_CONTROL).unwrap(),
+            "public, max-age=31536000, immutable"
+        );
+        let body = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+        assert_eq!(body, crate::assets::MERMAID_JS.as_bytes());
+        assert!(!body.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_vendor_mathjax_js_route() {
+        let res = vendor_mathjax_js().await.into_response();
+        assert_eq!(res.status(), StatusCode::OK);
+        assert_eq!(
+            res.headers().get(header::CONTENT_TYPE).unwrap(),
+            "application/javascript; charset=utf-8"
+        );
+        assert_eq!(
+            res.headers().get(header::CACHE_CONTROL).unwrap(),
+            "public, max-age=31536000, immutable"
+        );
+        let body = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+        assert_eq!(body, crate::assets::MATHJAX_JS.as_bytes());
+        assert!(!body.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_vendor_routes_via_router() {
+        let app = Router::new()
+            .route("/assets/vendor/mermaid.min.js", get(vendor_mermaid_js))
+            .route("/assets/vendor/mathjax.js", get(vendor_mathjax_js));
+
+        let res = app
+            .clone()
+            .oneshot(
+                Request::builder()
+                    .uri("/assets/vendor/mermaid.min.js")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        assert_eq!(
+            res.headers().get(header::CONTENT_TYPE).unwrap(),
+            "application/javascript; charset=utf-8"
+        );
+        assert_eq!(
+            res.headers().get(header::CACHE_CONTROL).unwrap(),
+            "public, max-age=31536000, immutable"
+        );
+        let body = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+        assert_eq!(body, crate::assets::MERMAID_JS.as_bytes());
+
+        let res = app
+            .oneshot(
+                Request::builder()
+                    .uri("/assets/vendor/mathjax.js")
+                    .body(Body::empty())
+                    .unwrap(),
+            )
+            .await
+            .unwrap();
+        assert_eq!(res.status(), StatusCode::OK);
+        assert_eq!(
+            res.headers().get(header::CONTENT_TYPE).unwrap(),
+            "application/javascript; charset=utf-8"
+        );
+        assert_eq!(
+            res.headers().get(header::CACHE_CONTROL).unwrap(),
+            "public, max-age=31536000, immutable"
+        );
+        let body = axum::body::to_bytes(res.into_body(), usize::MAX).await.unwrap();
+        assert_eq!(body, crate::assets::MATHJAX_JS.as_bytes());
+    }
 }

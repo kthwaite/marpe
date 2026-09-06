@@ -46,6 +46,8 @@ async fn main() {
         .route("/raw/{*path}", get(handlers::raw_file))
         .route("/api/files", get(handlers::file_list))
         .route("/events", get(handlers::events))
+        .route("/assets/vendor/mermaid.min.js", get(handlers::vendor_mermaid_js))
+        .route("/assets/vendor/mathjax.js", get(handlers::vendor_mathjax_js))
         .layer(TraceLayer::new_for_http())
         .with_state(state);
 

@@ -3,6 +3,8 @@ pub const GITHUB_CSS: &str = include_str!("assets/github.css");
 pub const GITLAB_CSS: &str = include_str!("assets/gitlab.css");
 pub const BASE_CSS: &str = include_str!("assets/base.css");
 pub const APP_JS: &str = include_str!("assets/app.js");
+pub const MERMAID_JS: &str = include_str!("assets/vendor/mermaid.min.js");
+pub const MATHJAX_JS: &str = include_str!("assets/vendor/tex-svg.js");
 
 /// A pre-built page shell with all static assets baked in.
 /// Only `{title}`, `{content}`, `{syntax_css_light}`, and `{syntax_css_dark}` remain as placeholders.
