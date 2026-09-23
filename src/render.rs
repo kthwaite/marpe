@@ -1,6 +1,6 @@
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Options, Parser, Tag, TagEnd, html};
 use std::sync::LazyLock;
-use syntect::html::{ClassedHTMLGenerator, ClassStyle};
+use syntect::html::{ClassStyle, ClassedHTMLGenerator};
 use syntect::parsing::SyntaxSet;
 use syntect::util::LinesWithEndings;
 
@@ -11,7 +11,8 @@ pub fn render_markdown(input: &str) -> String {
     let options = Options::ENABLE_TABLES
         | Options::ENABLE_STRIKETHROUGH
         | Options::ENABLE_TASKLISTS
-        | Options::ENABLE_FOOTNOTES;
+        | Options::ENABLE_FOOTNOTES
+        | Options::ENABLE_MATH;
     let parser = Parser::new_ext(input, options);
 
     let mut output = String::new();
@@ -33,8 +34,28 @@ pub fn render_markdown(input: &str) -> String {
             }
             Event::End(TagEnd::CodeBlock) if code_buf.is_some() => {
                 let (lang, code) = code_buf.take().unwrap();
-                let highlighted = try_highlight(&lang, &code);
-                highlighted_events.push(Event::Html(CowStr::from(highlighted)));
+                let rendered = if lang.eq_ignore_ascii_case("mermaid") {
+                    format!("<div class=\"mermaid\">{}</div>\n", escape_html(&code))
+                } else {
+                    try_highlight(&lang, &code)
+                };
+                highlighted_events.push(Event::Html(CowStr::from(rendered)));
+                continue;
+            }
+            Event::InlineMath(text) => {
+                highlighted_events.push(Event::Html(CowStr::Borrowed(
+                    "<span class=\"math-inline\">",
+                )));
+                highlighted_events.push(Event::Text(CowStr::from(format!(r"\({text}\)"))));
+                highlighted_events.push(Event::Html(CowStr::Borrowed("</span>")));
+                continue;
+            }
+            Event::DisplayMath(text) => {
+                highlighted_events.push(Event::Html(CowStr::Borrowed(
+                    "<span class=\"math-display\">",
+                )));
+                highlighted_events.push(Event::Text(CowStr::from(format!(r"\[{text}\]"))));
+                highlighted_events.push(Event::Html(CowStr::Borrowed("</span>")));
                 continue;
             }
             _ => {}
@@ -70,10 +91,7 @@ fn try_highlight(lang: &str, code: &str) -> String {
 }
 
 fn plain_code_block(lang: &str, code: &str) -> String {
-    let escaped = code
-        .replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;");
+    let escaped = escape_html(code);
     let lang_valid = !lang.is_empty()
         && lang
             .chars()
@@ -83,6 +101,12 @@ fn plain_code_block(lang: &str, code: &str) -> String {
     } else {
         format!("<pre><code>{escaped}</code></pre>\n")
     }
+}
+
+fn escape_html(text: &str) -> String {
+    text.replace('&', "&amp;")
+        .replace('<', "&lt;")
+        .replace('>', "&gt;")
 }
 
 #[cfg(test)]
@@ -174,5 +198,20 @@ mod tests {
         assert!(!html.contains("onmouseover"));
         assert!(!html.contains("class="));
         assert!(html.contains("<pre><code>"));
+    }
+
+    #[test]
+    fn mermaid_source_is_escaped_before_client_rendering() {
+        let html = render_markdown("```mermaid\ngraph TD\nA[<script>alert(1)</script>] --> B\n```");
+        assert!(html.contains("<div class=\"mermaid\">graph TD\nA[&lt;script&gt;"));
+        assert!(!html.contains("<script>"));
+    }
+
+    #[test]
+    fn math_is_preserved_for_mathjax_but_not_inside_code() {
+        let html = render_markdown("Inline $x < y$ and $$x^2$$.\n\n`$not_math$`");
+        assert!(html.contains(r#"<span class="math-inline">\(x &lt; y\)</span>"#));
+        assert!(html.contains(r#"<span class="math-display">\[x^2\]</span>"#));
+        assert!(html.contains("<code>$not_math$</code>"));
     }
 }

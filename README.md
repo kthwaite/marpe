@@ -40,3 +40,18 @@ marpe --port 8080 ./docs
 marpe --tls
 marpe --tls --cert ./localhost.pem --key ./localhost-key.pem
 ```
+
+## Diagrams and math
+
+Fenced `mermaid` blocks render as diagrams. Inline `$...$` and display `$$...$$` TeX render with MathJax. Both update when the markdown file changes, and diagrams follow the light/dark theme.
+
+````markdown
+```mermaid
+flowchart LR
+    A[Write] --> B[Preview]
+```
+
+Inline $x^2 + y^2 = z^2$ and display:
+
+$$\frac{a}{b}$$
+````

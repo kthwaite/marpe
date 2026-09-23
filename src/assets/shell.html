@@ -35,6 +35,18 @@
             <article class="markdown-body">{content}</article>
         </main>
     </div>
-    <script>{app_js}</script>
+    <script>
+        window.MathJax = {
+            startup: { typeset: false },
+            options: {
+                menuOptions: {
+                    settings: { enrich: false, speech: false, braille: false }
+                }
+            }
+        };
+    </script>
+    <script defer src="/assets/vendor/mermaid.min.js"></script>
+    <script defer src="/assets/vendor/mathjax.js"></script>
+    <script>document.addEventListener('DOMContentLoaded', () => { {app_js} });</script>
 </body>
 </html>
